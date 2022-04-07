@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Rubik", sans-serif;
+  font-weight: light
+}
+
+.candidate-container {
+  @apply grid grid-cols-3 place-content-center justify-center items-center justify-self-center place-items-center w-8 h-8;
+}
+
+.candidate-cell {
+  @apply text-xs w-3 h-3 flex items-center justify-center
+}
+
+.cell-inner {
+  @apply relative w-full h-full flex items-center justify-center z-10 before:w-3 before:h-3 before:absolute before:translate-y-2  before:bg-zinc-900 before:z-20 before:bottom-0 before:hidden
+}
+
+.cell-container {
+  @apply w-14 h-14 z-10 flex items-center justify-center border-green-800 relative pl-[1px] pt-[2px] after:absolute after:rounded-full after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:z-0 after:transition-all
+}
+
+.separator-vertical {
+  @apply before:h-full before:border-r-2 before:translate-x-1/2 before:border-green-500 pb-[1px] before:absolute before:top-0 before:right-0 before:z-30
+}
+
+.row {
+  @apply flex relative after:w-full after:absolute after:bottom-0 after:left-0 after:translate-y-1/2
+}
+
+.border-horizontal {
+  &.thick {
+    @apply after:border-b-2 after:z-40 after:border-green-500
+  }
+  &.thin {
+    @apply after:border-b after:z-0 after:border-green-800
+  }
+}
+
+.grid-cover {
+  &-middle {
+    @apply after:content-[''] after:w-6 after:h-6 after:bg-zinc-900 after:z-20 after:absolute after:bottom-0 after:right-0 after:translate-y-1/2 after:translate-x-1/2
+  }
+  &-right {
+    @apply before:w-3 before:h-3 before:absolute before:top-0 before:right-0 before:z-20 before:bg-zinc-900
+  }
+}
