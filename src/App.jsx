@@ -216,6 +216,46 @@ function App() {
     xhr.send(null);
   }, [])
 
+  const updateBoardUponNumberInsert = (number) => {
+    const answer = JSON.parse(JSON.stringify(answerRef.current));
+    const candidates = JSON.parse(JSON.stringify(candidatesRef.current));
+
+    for (let i = 0; i < 9; i++) {
+      // check row candidates
+      if (candidatesRef.current[selectedRef.current[0]][i] && i !== selectedRef.current[1]) {
+        answer[selectedRef.current[0]][i] = answer[selectedRef.current[0]][i].toString().replace(number, "");
+      }
+
+      // check column candidates
+      if (candidatesRef.current[i][selectedRef.current[1]] && i !== selectedRef.current[0]) {
+        answer[i][selectedRef.current[1]] = answer[i][selectedRef.current[1]].toString().replace(number, "");
+      }
+
+      // check box candidates
+      const boxX = Math.floor(selectedRef.current[1] / 3) * 3;
+      const boxY = Math.floor(selectedRef.current[0] / 3) * 3;
+      for (let y = boxY; y < boxY + 3; y++) {
+        for (let x = boxX; x < boxX + 3; x++) {
+          if (candidatesRef.current[y][x] && JSON.stringify([y, x]) !== JSON.stringify(selectedRef.current)) {
+            answer[y][x] = answer[y][x].toString().replace(number, "");
+          }
+        }
+      }
+    }
+
+    for (let y = 0; y < 9; y++) {
+      for (let x = 0; x < 9; x++) {
+        if (!answer[y][x]) {
+          answer[y][x] = 0;
+          candidates[y][x] = false;
+        }
+      }
+    }
+    
+    setAnswer(answer);
+    setCandidates(candidates)
+  }
+
   const setCandidatesState = (state) => {
     const newCandidates = JSON.parse(JSON.stringify(candidatesRef.current));
     newCandidates[selectedRef.current[0]][selectedRef.current[1]] = state;
@@ -229,6 +269,7 @@ function App() {
         let newAnswer = JSON.parse(JSON.stringify(answerRef.current));
         newAnswer[selectedRef.current[0]][selectedRef.current[1]] = number;
         setAnswer(newAnswer);
+        updateBoardUponNumberInsert(number.toString());
       }
     }
   }
