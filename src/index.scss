@@ -45,7 +45,10 @@
   &-middle {
     @apply after:content-[''] after:w-6 after:h-6 after:bg-zinc-900 after:z-20 after:absolute after:bottom-0 after:right-0 after:translate-y-1/2 after:translate-x-1/2
   }
-  &-right {
+  &-top {
     @apply before:w-3 before:h-3 before:absolute before:top-0 before:right-0 before:z-20 before:bg-zinc-900
+  }
+  &-bottom {
+    @apply before:w-3 before:h-3 before:absolute before:bottom-0 before:right-0 before:z-20 before:bg-zinc-900
   }
 }

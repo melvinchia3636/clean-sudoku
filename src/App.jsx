@@ -123,12 +123,12 @@ const Cell = ({ xi, yi }) => {
           ${
             !((yi)%3)
             && (xi + 1)%3
-            && "grid-cover-right"
+            && "grid-cover-top"
           }
           ${
             (yi)%3
             && ((xi + 1)%3)
-            && ""
+            && "grid-cover-bottom"
         }
       `}
       onClick={
@@ -166,6 +166,8 @@ const Row = ({ y, yi }) => {
 function App() {
   const [board, _setBoard] = useState();
   const [answer, _setAnswer] = useState();
+  const [solution, setSolution] = useState();
+  const [solved, setSolved] = useState(false);
   const [selected, _setSelected] = useState([-1, -1])
   const [candidates, _setCandidates] = useState(Array(9).fill(0).map(() => Array(9).fill(0).map(() => false)))
 
@@ -193,18 +195,19 @@ function App() {
     _setCandidates(data);
   };
 
-  useEffect(() => {
-    document.cookie = "mode=classic;"
-    var xhr = new XMLHttpRequest();
+  const fetchBoard = () => {
+    const xhr = new XMLHttpRequest();
     xhr.open("GET", "https://cors-anywhere.thecodeblog.net/sudoku.com/api/level/hard", true);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
     xhr.onload = function (e) {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          const { mission } = JSON.parse((xhr.responseText));
+          const { mission, solution } = JSON.parse(xhr.responseText);
           const newBoard = mission.match(/.{1,9}/g).map(e => e.split("").map(e => parseInt(e)))
           setBoard(newBoard);
+          setSolution(solution);
           setAnswer(JSON.parse(JSON.stringify(newBoard)))
+          setSolved(false)
         } else {
           console.error(xhr.statusText);
         }
@@ -214,7 +217,22 @@ function App() {
       console.error(xhr.statusText);
     };
     xhr.send(null);
+  }
+
+  useEffect(() => {
+    fetchBoard();
   }, [])
+
+  useEffect(() => {
+    if (answer && solution) {
+      if (candidates.every(e => e.every(e => !e))) {
+        if (answer.map(e => e.join("")).join("") === solution) {
+          setSolved(true);
+          fetchBoard();
+        }
+      }
+    }
+  }, [answer]);
 
   const updateBoardUponNumberInsert = (number) => {
     const answer = JSON.parse(JSON.stringify(answerRef.current));
@@ -295,9 +313,9 @@ function App() {
           newAnswer[selectedRef.current[0]][selectedRef.current[1]] = num+(num.includes(number) ? "" : number);
         }
         setAnswer(newAnswer);
+        setCandidatesState(true);
       }
     }
-    setCandidatesState(true);
   }
 
   const removeNumber = () => {
@@ -338,10 +356,10 @@ function App() {
     }}>
       <div className="w-full h-screen overflow-hidden bg-zinc-900 text-green-500 flex items-center justify-center select-none text-2xl">
         {board && answer && <>
-          <div className="animate__animated animate__backInRight">
+          <div className={`animate__animated ${solved ? "animate__backOutLeft" : "animate__backInRight"}`}>
             {board.map((y, yi) => <Row y={y} yi={yi} />)}
           </div>
-          </>}
+        </>}
       </div>
     </BoardContext.Provider>
   )
