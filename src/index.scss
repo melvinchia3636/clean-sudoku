@@ -17,15 +17,15 @@
 }
 
 .cell-inner {
-  @apply relative w-full h-full flex items-center justify-center z-10 before:w-3 before:h-3 before:absolute before:translate-y-2  before:bg-zinc-900 before:z-20 before:bottom-0 before:hidden
+  @apply relative w-full h-full flex items-center justify-center z-10 before:w-3 before:h-3 before:absolute before:translate-y-2 before:z-20 before:bottom-0 before:hidden
 }
 
 .cell-container {
-  @apply w-14 h-14 z-10 flex items-center justify-center border-green-800 relative pl-[1px] pt-[2px] after:absolute after:rounded-full after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:z-0 after:transition-all
+  @apply w-14 h-14 z-10 flex items-center justify-center relative pl-[1px] pt-[2px] after:absolute after:rounded-full after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:z-0 after:transition-all
 }
 
 .separator-vertical {
-  @apply before:h-full before:border-r-2 before:translate-x-1/2 before:border-green-500 pb-[1px] before:absolute before:top-0 before:right-0 before:z-30
+  @apply before:h-full before:border-r-2 before:translate-x-1/2 pb-[1px] before:absolute before:top-0 before:right-0 before:z-30
 }
 
 .row {
@@ -34,21 +34,21 @@
 
 .border-horizontal {
   &.thick {
-    @apply after:border-b-2 after:z-40 after:border-green-500
+    @apply after:border-b-2 after:z-40
   }
   &.thin {
-    @apply after:border-b after:z-0 after:border-green-800
+    @apply after:border-b after:z-0
   }
 }
 
 .grid-cover {
   &-middle {
-    @apply after:content-[''] after:w-6 after:h-6 after:bg-zinc-900 after:z-20 after:absolute after:bottom-0 after:right-0 after:translate-y-1/2 after:translate-x-1/2
+    @apply after:content-[''] after:w-6 after:h-6 after:z-20 after:absolute after:bottom-0 after:right-0 after:translate-y-1/2 after:translate-x-1/2
   }
   &-top {
-    @apply before:w-3 before:h-3 before:absolute before:top-0 before:right-0 before:z-20 before:bg-zinc-900
+    @apply before:w-3 before:h-3 before:absolute before:top-0 before:right-0 before:z-20
   }
   &-bottom {
-    @apply before:w-3 before:h-3 before:absolute before:bottom-0 before:right-0 before:z-20 before:bg-zinc-900
+    @apply before:w-3 before:h-3 before:absolute before:bottom-0 before:right-0 before:z-20
   }
 }

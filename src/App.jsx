@@ -1,19 +1,55 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import "animate.css";
 
+const themes = {
+  "green": {
+    "background": "bg-zinc-900",
+    "backgroundText": "text-zinc-900",
+    "answer": "text-green-500",
+    "board": "text-green-700",
+    "border": "border-green-800",
+    "borderHorizontalThick": "after:border-green-500",
+    "borderHorizontalThin": "after:border-green-800",
+    "separatorVertical": "before:border-green-500",
+    "selected": "after:bg-green-500",
+    "selectedText": "!text-zinc-900",
+    "selectedMatch": "after:border-green-500/30",
+    "coverAfter": "after:bg-green-900",
+    "coverBefore": "before:bg-green-900",
+  },
+  "cyan": {
+    "background": "bg-slate-900",
+    "backgroundText": "text-zinc-900",
+    "answer": "text-cyan-100",
+    "board": "text-cyan-500",
+    "border": "border-cyan-800",
+    "borderHorizontalThick": "after:border-cyan-500",
+    "borderHorizontalThin": "after:border-cyan-800",
+    "separatorVertical": "before:border-cyan-500",
+    "selected": "after:bg-cyan-500",
+    "selectedText": "!text-zinc-900",
+    "selectedMatch": "after:bg-cyan-500/30",
+    "coverAfter": "after:bg-slate-900",
+    "coverBefore": "before:bg-slate-900",
+  },
+}
+
 const BoardContext = createContext({
   board: [],
   selected: [-1, -1],
   answer: [],
   candidates: [],
   setSelected: () => {},
+  theme: "green"
 })
 
 const CandidateCell = ({ xi, yi }) => {
   const {
     selected,
-    answer
+    answer,
+    theme
   } = useContext(BoardContext);
+  console.log(theme)
 
   return (
     <div className="candidate-container">
@@ -22,8 +58,8 @@ const CandidateCell = ({ xi, yi }) => {
           candidate-cell
           ${
             JSON.stringify(selected) === JSON.stringify([yi, xi]) 
-              ? "text-zinc-900"
-              : "text-green-500"
+              ? themes[theme]["backgroundText"]
+              : themes[theme]["answer"]
           }
           ${
             typeof answer[yi][xi] === "string" 
@@ -41,14 +77,16 @@ const CandidateCell = ({ xi, yi }) => {
 const CellInner = ({ xi, yi }) => {
   const {
     answer,
-    candidates
+    candidates,
+    theme
   } = useContext(BoardContext);
 
   return (
     <div className={`
       cell-inner
+      ${themes[theme]['coverBefore']}
       ${
-        (xi+1)%3 
+        [3, 6].includes(xi)
         && xi !== 0
         && "before:left-0 before:block"
       }
@@ -70,27 +108,29 @@ const CellInner = ({ xi, yi }) => {
 const CellContainer = ({ xi, yi }) => {
   const {
     selected,
-    answer
+    answer,
+    theme
   } = useContext(BoardContext);
 
   return (
     <div className={`
-      cell-container 
+      cell-container
+      ${themes[theme]["border"]}
       ${
         selected[0] === yi 
         && selected[1] === xi 
-          ? "after:w-10 after:h-10 !text-zinc-900 after:bg-green-500" 
+          ? `after:w-10 after:h-10 ${themes[theme]["selectedText"]} ${themes[theme]["selected"]}`
           : selected[0] !== -1 
             && answer[selected[0]][selected[1]] !== 0
             && answer[selected[0]][selected[1]] === answer[yi][xi]  
-              ? "after:h-10 after:w-10 after:bg-green-500/30" 
+              ? `after:h-10 after:w-10 ${themes[theme]["selectedMatch"]}`
               : "after:w-0 after:h-0"
       }
       ${
         xi !== 8 
         && (
           !((xi+1)%3) 
-            ? "separator-vertical"
+            ? "separator-vertical " + themes[theme]["separatorVertical"]
             : "border-r"
         )
       }
@@ -103,7 +143,8 @@ const CellContainer = ({ xi, yi }) => {
 const Cell = ({ xi, yi }) => {
   const {
     board,
-    setSelected
+    setSelected,
+    theme
   } = useContext(BoardContext);
 
   return (
@@ -112,23 +153,23 @@ const Cell = ({ xi, yi }) => {
         relative
         ${
           board[yi][xi]
-            ? "text-green-700"
-            : "text-green-500"
+            ? themes[theme]["board"]
+            : themes[theme]["answer"]
           }
           ${
             yi%3 < 2
             && xi%3 < 2
-            && "grid-cover-middle"
+            && "grid-cover-middle " + themes[theme]["coverAfter"]
           }
           ${
             !((yi)%3)
             && (xi + 1)%3
-            && "grid-cover-top"
+            && "grid-cover-top " + themes[theme]["coverBefore"]
           }
           ${
             (yi)%3
             && ((xi + 1)%3)
-            && "grid-cover-bottom"
+            && "grid-cover-bottom " + themes[theme]["coverBefore"]
         }
       `}
       onClick={
@@ -141,6 +182,9 @@ const Cell = ({ xi, yi }) => {
 }
 
 const Row = ({ y, yi }) => {
+  const {
+    theme
+  } = useContext(BoardContext);
 
   return (
     <div className={`
@@ -149,8 +193,8 @@ const Row = ({ y, yi }) => {
         yi !== 8
         && (
           !((yi+1)%3)
-            ? "border-horizontal thick"
-            : "border-horizontal thin"
+            ? "border-horizontal thick " + themes[theme]["borderHorizontalThick"]
+            : "border-horizontal thin " + themes[theme]["borderHorizontalThin"]
         )
       }`
     }>
@@ -164,6 +208,7 @@ const Row = ({ y, yi }) => {
 }
 
 function App() {
+  const [theme, setTheme] = useState("cyan");
   const [board, _setBoard] = useState();
   const [answer, _setAnswer] = useState();
   const [solution, setSolution] = useState();
@@ -353,8 +398,9 @@ function App() {
       answer: answer,
       candidates: candidates,
       setSelected: setSelected,
+      theme
     }}>
-      <div className="w-full h-screen overflow-hidden bg-zinc-900 text-green-500 flex items-center justify-center select-none text-2xl">
+      <div className={`w-full h-screen overflow-hidden ${themes[theme]['background']} ${themes[theme]['answer']} flex items-center justify-center select-none text-2xl`}>
         {board && answer && <>
           <div className={`animate__animated ${solved ? "animate__backOutLeft" : "animate__backInRight"}`}>
             {board.map((y, yi) => <Row y={y} yi={yi} />)}
