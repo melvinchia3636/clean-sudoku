@@ -1,6 +1,6 @@
 <center><h1 align="center">📝 Sudoku - A clean one</h1></center>
 
-<p align="center">A minimalistic sudoku game board.</p>
+<p align="center">A minimalistic sudoku game board</p>
 
 ## The Problem
 
